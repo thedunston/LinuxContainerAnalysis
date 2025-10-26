@@ -1,0 +1,301 @@
+{
+  "DISCOVERY": {
+    "description": "System and Network Discovery",
+    "indicators": [
+      ["uname", "System Information Discovery"],
+      ["ip.*show", "Network Configuration Discovery"],
+      ["ifconfig", "Network Interface Discovery"],
+      ["resolv\\.conf", "DNS Configuration Discovery"],
+      ["ss.*-", "Network Connection Discovery"],
+      ["netstat", "Network Statistics Discovery"],
+      ["/etc/passwd", "Account Discovery"],
+      ["/etc/shadow", "Password File Access"],
+      ["systemctl.*list", "Service Discovery"],
+      ["crontab.*-l", "Scheduled Task Discovery"],
+      ["dpkg.*-l", "Software Discovery"],
+      ["rpm.*-qa", "Package Discovery"],
+      ["rc\\.local", "Boot/Logon Autostart Discovery"],
+      ["\\.bashrc", "User Init Files Discovery"],
+      ["\\.bash_profile", "Shell Profile Discovery"],
+      ["whoami", "User Identity Discovery"],
+      ["hostname", "System Hostname Discovery"],
+      ["ps.*aux", "Process Discovery"],
+      ["lsof", "Open Files Discovery"]
+    ]
+  },
+  "PERSISTENCE": {
+    "description": "Establish Persistence Mechanisms",
+    "indicators": [
+      ["\\.service", "Systemd Service Creation"],
+      ["systemctl.*enable", "Systemd Service Enable"],
+      ["crontab", "Cron Job Persistence"],
+      ["cron\\.d", "Cron Directory Modification"],
+      ["\\.bashrc", "Shell Profile Modification"],
+      ["@reboot", "Reboot Persistence"],
+      ["/etc/rc\\.local", "RC Local Persistence"],
+      ["\\.bash_profile", "Bash Profile Modification"],
+      ["/etc/init\\.d/", "Init Script Persistence"]
+    ]
+  },
+  "PRIVILEGE_ESCALATION": {
+    "description": "Privilege Escalation Attempts",
+    "indicators": [
+      ["useradd", "New User Account Creation"],
+      ["sudoadmin", "Privileged User Creation"],
+      ["usermod.*sudo", "Add User to Sudo Group"],
+      ["userpasswd", "Password Modification"],
+      ["/etc/shadow", "Shadow File Access (requires root)"],
+      ["sudo", "Sudo Command Execution"],
+      ["su\\s", "Switch User Command"],
+      ["setuid", "Set UID Bit Manipulation"]
+    ]
+  },
+  "DEFENSE_EVASION": {
+    "description": "Evade Detection and Analysis",
+    "indicators": [
+      ["unlink.*\\.sh", "Delete Dropper Script"],
+      ["SecurityUpdate", "Masquerade as System Update"],
+      ["svchost", "Masquerade as Windows Service Name"],
+      ["/var/tmp/", "Use of Temporary Directory"],
+      ["/tmp/", "Use of Temporary Directory"],
+      ["rm.*-rf", "File Deletion"],
+      ["shred", "Secure File Deletion"],
+      ["history.*-c", "Clear Command History"]
+    ]
+  },
+  "EXECUTION": {
+    "description": "Execute Malicious Code",
+    "indicators": [
+      ["fork\\(\\)", "Process Creation"],
+      ["system\\(", "Shell Command Execution"],
+      ["execve", "Program Execution"],
+      ["chmod.*\\+x", "Make File Executable"],
+      ["chmod.*0755", "Set Execute Permissions"],
+      ["popen", "Pipe Command Execution"],
+      ["/bin/sh", "Shell Execution"],
+      ["/bin/bash", "Bash Shell Execution"]
+    ]
+  },
+  "CREDENTIAL_ACCESS": {
+    "description": "Credential Theft and Access",
+    "indicators": [
+      ["/etc/passwd", "Password File Access"],
+      ["/etc/shadow", "Shadow Password File Access"],
+      ["Secur1ty@2025", "Hardcoded Password"],
+      ["password", "Password-related Activity"],
+      ["\\.ssh/", "SSH Key Access"],
+      ["id_rsa", "SSH Private Key Access"],
+      ["authorized_keys", "SSH Authorized Keys Access"]
+    ]
+  },
+  "INITIAL_ACCESS": {
+    "description": "Initial Access Vector",
+    "indicators": [
+      ["SSH.*brute.*force", "SSH Brute Force Attack"],
+      ["sshd.*Failed", "SSH Failed Login Attempts"],
+      ["sshd.*Accepted", "SSH Successful Login"],
+      ["auth\\.log", "Authentication Log Manipulation"],
+      ["lastlog", "Last Login Information Access"],
+      ["wtmp", "Login Records Access"]
+    ]
+  },
+  "IMPACT": {
+    "description": "System Impact and Modifications",
+    "indicators": [
+      ["fwrite.*ELF", "Binary Deployment"],
+      ["mkdir.*/tmp/", "Suspicious Directory Creation"],
+      ["mkdir.*/var/tmp/", "Temporary Directory Creation"],
+      ["rm.*-rf.*\\*", "Mass File Deletion"],
+      ["dd.*if=", "Disk Manipulation"],
+      ["mkfs", "Filesystem Creation/Destruction"]
+    ]
+  },
+  "GTFOBIN_SHELL": {
+    "description": "GTFOBins Shell Escape/Execution",
+    "indicators": [
+      ["execve.*\"/.*awk", "AWK Shell Escape"],
+      ["execve.*\"/.*bash", "Bash Shell"],
+      ["execve.*\"/.*busybox", "BusyBox Shell"],
+      ["execve.*\"/.*docker", "Docker Execution"],
+      ["execve.*\"/.*find", "Find Command"],
+      ["execve.*\"/.*gdb", "GDB Execution"],
+      ["execve.*\"/.*git", "Git Execution"],
+      ["execve.*\"/.*less", "Less Pager"],
+      ["execve.*\"/.*lua", "Lua Execution"],
+      ["execve.*\"/.*man", "Man Pager"],
+      ["execve.*\"/.*more", "More Pager"],
+      ["execve.*\"/.*mysql", "MySQL Execution"],
+      ["execve.*\"/.*nano", "Nano Editor"],
+      ["execve.*\"/.*nmap", "Nmap Execution"],
+      ["execve.*\"/.*node", "Node.js Execution"],
+      ["execve.*\"/.*perl", "Perl Execution"],
+      ["execve.*\"/.*php", "PHP Execution"],
+      ["execve.*\"/.*python", "Python Execution"],
+      ["execve.*\"/.*ruby", "Ruby Execution"],
+      ["execve.*\"/.*sed", "Sed Execution"],
+      ["execve.*\"/.*ssh", "SSH Execution"],
+      ["execve.*\"/.*tar", "Tar Execution"],
+      ["execve.*\"/.*vi\"", "Vi Editor"],
+      ["execve.*\"/.*vim", "Vim Editor"],
+      ["execve.*\"/.*wget", "Wget Execution"],
+      ["execve.*\"/.*zip", "Zip Execution"],
+      ["execve.*\"/.*journalctl", "Journalctl Execution"],
+      ["execve.*\"/.*env", "Env Execution"],
+      ["execve.*\"/.*ftp", "FTP Execution"],
+      ["execve.*\"/.*irb", "IRB Execution"],
+      ["execve.*\"/.*jjs", "JJS Execution"],
+      ["execve.*\"/.*ksh", "KSH Shell"],
+      ["execve.*\"/.*lftp", "LFTP Execution"],
+      ["execve.*\"/.*make", "Make Execution"],
+      ["execve.*\"/.*nc", "Netcat Execution"],
+      ["execve.*\"/.*socat", "Socat Execution"],
+      ["execve.*\"/.*sqlite3", "SQLite3 Execution"],
+      ["execve.*\"/.*strace", "Strace Execution"],
+      ["execve.*\"/.*systemctl", "Systemctl Execution"],
+      ["execve.*\"/.*tcpdump", "Tcpdump Execution"],
+      ["execve.*\"/.*tee", "Tee Execution"],
+      ["execve.*\"/.*tmux", "Tmux Execution"],
+      ["execve.*\"/.*zsh", "ZSH Shell"]
+    ]
+  },
+  "GTFOBIN_FILE_READ": {
+    "description": "GTFOBins Unauthorized File Read",
+    "indicators": [
+      ["execve.*\"/.*base64", "Base64 File Read"],
+      ["execve.*\"/.*base32", "Base32 File Read"],
+      ["execve.*\"/.*cat", "Cat File Read"],
+      ["execve.*\"/.*curl", "Curl File Read"],
+      ["execve.*\"/.*diff", "Diff File Read"],
+      ["execve.*\"/.*grep", "Grep File Read"],
+      ["execve.*\"/.*head", "Head File Read"],
+      ["execve.*\"/.*hexdump", "Hexdump File Read"],
+      ["execve.*\"/.*jq", "JQ File Read"],
+      ["execve.*\"/.*less", "Less File Read"],
+      ["execve.*\"/.*more", "More File Read"],
+      ["execve.*\"/.*od", "Od File Read"],
+      ["execve.*\"/.*openssl", "OpenSSL File Operation"],
+      ["execve.*\"/.*strings", "Strings File Read"],
+      ["execve.*\"/.*tail", "Tail File Read"],
+      ["execve.*\"/.*tar", "Tar File Operation"],
+      ["execve.*\"/.*xxd", "XXD File Read"],
+      ["execve.*\"/.*7z", "7z File Operation"],
+      ["execve.*\"/.*awk", "AWK File Read"],
+      ["execve.*\"/.*bzip2", "Bzip2 File Operation"],
+      ["execve.*\"/.*comm", "Comm File Read"],
+      ["execve.*\"/.*cpio", "CPIO File Operation"],
+      ["execve.*\"/.*cut", "Cut File Read"],
+      ["execve.*\"/.*dd", "DD File Operation"],
+      ["execve.*\"/.*file", "File Read"],
+      ["execve.*\"/.*fold", "Fold File Read"],
+      ["execve.*\"/.*gzip", "Gzip File Operation"],
+      ["execve.*\"/.*iconv", "Iconv File Operation"],
+      ["execve.*\"/.*nl\"", "NL File Read"],
+      ["execve.*\"/.*paste", "Paste File Read"],
+      ["execve.*\"/.*rev", "Rev File Read"],
+      ["execve.*\"/.*sed", "Sed File Operation"],
+      ["execve.*\"/.*sort", "Sort File Read"],
+      ["execve.*\"/.*split", "Split File Operation"],
+      ["execve.*\"/.*tac", "Tac File Read"],
+      ["execve.*\"/.*uniq", "Uniq File Read"],
+      ["execve.*\"/.*wc", "WC File Read"],
+      ["execve.*\"/.*xz", "XZ File Operation"]
+    ]
+  },
+  "GTFOBIN_FILE_WRITE": {
+    "description": "GTFOBins Unauthorized File Write",
+    "indicators": [
+      ["execve.*\"/.*awk", "AWK File Write"],
+      ["execve.*\"/.*cp", "CP File Write"],
+      ["execve.*\"/.*dd", "DD File Write"],
+      ["execve.*\"/.*ed", "Ed File Write"],
+      ["execve.*\"/.*emacs", "Emacs File Write"],
+      ["execve.*\"/.*find", "Find File Write"],
+      ["execve.*\"/.*lua", "Lua File Write"],
+      ["execve.*\"/.*nano", "Nano File Write"],
+      ["execve.*\"/.*node", "Node.js File Write"],
+      ["execve.*\"/.*perl", "Perl File Write"],
+      ["execve.*\"/.*php", "PHP File Write"],
+      ["execve.*\"/.*python", "Python File Write"],
+      ["execve.*\"/.*ruby", "Ruby File Write"],
+      ["execve.*\"/.*sed", "Sed File Write"],
+      ["execve.*\"/.*tee", "Tee File Write"],
+      ["execve.*\"/.*vi\"", "Vi File Write"],
+      ["execve.*\"/.*vim", "Vim File Write"],
+      ["execve.*\"/.*wget", "Wget File Write"],
+      ["execve.*\"/.*curl", "Curl File Write"],
+      ["execve.*\"/.*rsync", "Rsync File Write"],
+      ["execve.*\"/.*scp", "SCP File Write"],
+      ["execve.*\"/.*sftp", "SFTP File Write"],
+      ["execve.*\"/.*tar", "Tar File Write"],
+      ["execve.*\"/.*zip", "Zip File Write"],
+      ["execve.*\"/.*cpio", "CPIO File Write"],
+      ["execve.*\"/.*install", "Install File Write"],
+      ["execve.*\"/.*mv", "Move File"],
+      ["execve.*\"/.*shuf", "Shuf File Write"],
+      ["execve.*\"/.*split", "Split File Write"]
+    ]
+  },
+  "GTFOBIN_SUID": {
+    "description": "GTFOBins SUID Exploitation",
+    "indicators": [
+      ["chmod", "Chmod SUID"],
+      ["chown", "Chown SUID"]
+    ]
+  },
+  "GTFOBIN_SUDO": {
+    "description": "GTFOBins Sudo Exploitation",
+    "indicators": [
+      ["sudo", "Sudo Execution"]
+    ]
+  },
+  "GTFOBIN_REVERSE_SHELL": {
+    "description": "GTFOBins Reverse Shell Establishment",
+    "indicators": [
+      ["execve.*\"/.*netcat", "Netcat Reverse Shell"],
+      ["execve.*\"/.*nc", "NC Reverse Shell"],
+      ["execve.*\"/.*socat", "Socat Reverse Shell"],
+      ["execve.*\"/.*telnet", "Telnet Reverse Shell"]
+    ]
+  },
+  "GTFOBIN_FILE_UPLOAD": {
+    "description": "GTFOBins File Upload/Exfiltration",
+    "indicators": [
+      ["execve.*\"/.*curl", "Curl File Upload"],
+      ["execve.*\"/.*wget", "Wget File Upload"],
+      ["execve.*\"/.*nc", "Netcat File Upload"],
+      ["execve.*\"/.*scp", "SCP File Upload"],
+      ["execve.*\"/.*sftp", "SFTP File Upload"],
+      ["execve.*\"/.*ftp", "FTP File Upload"],
+      ["execve.*\"/.*rsync", "Rsync File Upload"],
+      ["execve.*\"/.*ssh", "SSH File Upload"],
+      ["execve.*\"/.*socat", "Socat File Upload"],
+      ["execve.*\"/.*openssl", "OpenSSL File Upload"]
+    ]
+  },
+  "GTFOBIN_FILE_DOWNLOAD": {
+    "description": "GTFOBins File Download",
+    "indicators": [
+      ["execve.*\"/.*curl", "Curl File Download"],
+      ["execve.*\"/.*wget", "Wget File Download"],
+      ["execve.*\"/.*nc", "Netcat File Download"],
+      ["execve.*\"/.*scp", "SCP File Download"],
+      ["execve.*\"/.*sftp", "SFTP File Download"],
+      ["execve.*\"/.*ftp", "FTP File Download"],
+      ["execve.*\"/.*rsync", "Rsync File Download"],
+      ["execve.*\"/.*ssh", "SSH File Download"],
+      ["execve.*\"/.*socat", "Socat File Download"],
+      ["execve.*\"/.*openssl", "OpenSSL File Download"],
+      ["execve.*\"/.*aria2c", "Aria2c File Download"],
+      ["execve.*\"/.*lwp-download", "LWP Download"],
+      ["execve.*\"/.*fetch", "Fetch File Download"]
+    ]
+  },
+  "GTFOBIN_LIBRARY_LOAD": {
+    "description": "GTFOBins Library/Module Loading",
+    "indicators": [
+      ["LD_PRELOAD", "LD_PRELOAD Environment"],
+      ["LD_LIBRARY_PATH", "LD_LIBRARY_PATH Manipulation"],
+      ["ld\\.so", "LD.SO Execution"]
+    ]
+  }
+}

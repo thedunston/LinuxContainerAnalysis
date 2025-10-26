@@ -2,45 +2,42 @@ FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ltrace \
+    python3 \
+    python3-pip \
     gdb \
     strace \
-    ltrace \
     binwalk \
     yara \
     hexedit \
-    hexer \
-    wireshark \
-    tcpdump \
-    nmap \
-    p7zip-full \
-    upx-ucl \
-    libimage-exiftool-perl \
-    foremost \
-    scalpel \
     binutils \
     elfutils \
-    binutils \
-    checksec \
-    htop \
-    cmake \
-    gcc-multilib \
-    g++-multilib \
-    libc6-dbg \
-    nasm \
-    python3-pip \
-    python3-dev \
-    libssl-dev \
-    libffi-dev \
-    build-essential \
-    manpages-dev \
-    libgmp3-dev \
-    libc6-i386 \
-    libc6-dev-i386 \
-    lib32ncurses5-dev \
-    xinetd \
-    netcat \
-    git
+    wget \
+    netcat-openbsd \
+    curl \
+    netcat-traditional \
+    inotify-tools \
+    file \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy monitoring and trace analysis tools
+COPY start-monitoring.sh /usr/local/bin/start-monitoring.sh
+COPY trace-malware.sh /usr/local/bin/trace-malware
+RUN chmod +x /usr/local/bin/start-monitoring.sh
+RUN chmod +x /usr/local/bin/trace-malware
+
+# Copy ltrace analysis tools
+COPY ltrace-full.sh /usr/local/bin/ltrace-full
+COPY parse-ltrace.py /usr/local/bin/parse-ltrace.py
+COPY parse-ltrace-behavior.py /usr/local/bin/parse-ltrace-behavior.py
+RUN chmod +x /usr/local/bin/ltrace-full
+RUN chmod +x /usr/local/bin/parse-ltrace.py
+RUN chmod +x /usr/local/bin/parse-ltrace-behavior.py
+
+# Set working directory
 RUN mkdir -p /home/app
 WORKDIR /home/app
+
+# Keep container running
+CMD ["tail", "-f", "/dev/null"]

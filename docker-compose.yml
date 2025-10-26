@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  malware-analysis:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: linux_malware_analysis:latest
+    container_name: linux_malware_analysis
+    volumes:
+      - ./samples:/home/app/samples
+      - ./analysis:/home/app/analysis
+    stdin_open: true
+    tty: true
+    network_mode: bridge
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
