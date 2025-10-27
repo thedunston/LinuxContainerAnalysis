@@ -8,8 +8,7 @@ The Dockerfile has been updated to include all ltrace analysis tools and documen
 
 **Tools** (in `/usr/local/bin/`):
 - `ltrace-full` - Main analysis wrapper
-- `parse-ltrace.py` - Technical parser
-- `parse-ltrace-behavior.py` - Behavioral parser
+- `parse-ltrace-behavior.py` - Behavioral parser with suspicious activity detection
 
 **Demo** (in `/opt/monitoring/`):
 - `demo-behavior-analysis.sh` - Interactive demo
@@ -124,14 +123,14 @@ environment:
 ```bash
 # Check if files are installed
 docker exec linux_malware_container ls -la /usr/local/bin/ltrace-full
-docker exec linux_malware_container ls -la /usr/local/bin/parse-ltrace*.py
+docker exec linux_malware_container ls -la /usr/local/bin/parse-ltrace-behavior.py
 ```
 
 ### Permission Issues
 ```bash
 # Make sure files are executable
 docker exec linux_malware_container chmod +x /usr/local/bin/ltrace-full
-docker exec linux_malware_container chmod +x /usr/local/bin/parse-ltrace*.py
+docker exec linux_malware_container chmod +x /usr/local/bin/parse-ltrace-behavior.py
 ```
 
 ### Python Not Found

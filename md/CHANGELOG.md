@@ -4,9 +4,9 @@
 
 ### Added
 - **ltrace-full.sh** - Comprehensive ltrace wrapper with optimal flags for malware analysis
-- **parse-ltrace.py** - Technical parser that categorizes library calls by function type
-- **parse-ltrace-behavior.py** - Behavioral parser that maps calls to attack tactics
+- **parse-ltrace-behavior.py** - Behavioral parser that maps calls to attack tactics and detects suspicious activities
 - **demo-behavior-analysis.sh** - Interactive demonstration script
+- **SUSPICIOUS category** - Added to behavior_patterns.json for flagging suspicious patterns
 
 ### Documentation Added
 - **README_LTRACE.md** - Main overview and quick start guide
@@ -116,7 +116,7 @@ ltrace-full /home/app/malware
 
 ### Host System
 ```bash
-chmod +x ltrace-full.sh parse-ltrace*.py
+chmod +x ltrace-full.sh parse-ltrace-behavior.py
 ./ltrace-full.sh ./malware_sample
 ```
 

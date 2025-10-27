@@ -5,7 +5,7 @@ This toolkit provides enhanced ltrace analysis capabilities for malware analysis
 
 ## Files
 - **ltrace-full.sh** - Wrapper script that runs ltrace with optimal flags for malware analysis
-- **parse-ltrace.py** - Python parser that organizes ltrace output into readable categories
+- **parse-ltrace-behavior.py** - Python parser that analyzes behavioral patterns and maps to attack tactics
 
 ## Usage
 
@@ -26,7 +26,7 @@ ltrace -s 4096 -n 4 -f -tt -T -o output.txt ./malware_sample
 
 ### Parse Existing ltrace Output
 ```bash
-python3 parse-ltrace.py ltrace_output.txt parsed_output.txt
+python3 parse-ltrace-behavior.py ltrace_output.txt behavior_report.txt
 ```
 
 ## ltrace Flags Explained
@@ -140,7 +140,7 @@ apt-get install ltrace
 
 ### Permission denied
 ```bash
-chmod +x ltrace-full.sh parse-ltrace.py
+chmod +x ltrace-full.sh parse-ltrace-behavior.py
 ```
 
 ### Parser errors

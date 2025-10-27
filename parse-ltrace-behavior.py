@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Enhanced ltrace Behavior Parser for Malware Analysis
+Parses an ltrace file for behaviors like file operations, network activity, process creation, etc..
 Maps library calls to specific malicious behaviors and TTPs (Tactics, Techniques, Procedures)
+Includes checks for GTFOBIns in the behavior_patterns.json file.
 """
 
 import re
@@ -250,6 +251,11 @@ class BehaviorAnalyzer:
             f.write(f"Total Function Calls Analyzed: {len(self.timeline)}\n")
             f.write(f"Tactics Employed: {len([k for k, v in self.behavior_matches.items() if v])}\n\n")
             
+            # Suspicious Activities Highlight
+            suspicious_count = len(self.behavior_matches.get('SUSPICIOUS', []))
+            if suspicious_count > 0:
+                f.write("⚠️  SUSPICIOUS ACTIVITIES DETECTED: {} indicators\n\n".format(suspicious_count))
+            
             # Tactics Overview
             f.write("## TACTICS OVERVIEW\n")
             f.write("-" * 100 + "\n")
@@ -288,6 +294,34 @@ class BehaviorAnalyzer:
                     
                     if len(activities) > 3:
                         f.write(f"  ... and {len(activities) - 3} more occurrences\n")
+                
+                f.write("\n")
+            
+            # Suspicious Activities Section
+            suspicious_matches = self.behavior_matches.get('SUSPICIOUS', [])
+            if suspicious_matches:
+                f.write("## SUSPICIOUS ACTIVITIES\n")
+                f.write("=" * 100 + "\n")
+                f.write(f"Total Suspicious Indicators: {len(suspicious_matches)}\n\n")
+                
+                # Group by technique
+                by_technique = defaultdict(list)
+                for match in suspicious_matches:
+                    by_technique[match['technique']].append(match)
+                
+                for technique, occurrences in sorted(by_technique.items(), key=lambda x: len(x[1]), reverse=True):
+                    f.write(f"⚠️  {technique}\n")
+                    f.write(f"   Count: {len(occurrences)}\n")
+                    f.write(f"   Evidence:\n")
+                    
+                    for occ in occurrences[:5]:  # Show first 5
+                        call = occ['call']
+                        ts = f"[{occ['timestamp']}] " if occ['timestamp'] != 'N/A' else ""
+                        f.write(f"     {ts}{call['function']}({call['args'][:70]}...) = {call['return']}\n")
+                    
+                    if len(occurrences) > 5:
+                        f.write(f"     ... and {len(occurrences) - 5} more\n")
+                    f.write("\n")
                 
                 f.write("\n")
             
@@ -418,8 +452,8 @@ def main():
     analyzer.process_file(input_file)
     analyzer.generate_report(output_file)
     
-    print(f"\n[✓] Behavioral analysis complete!")
-    print(f"[✓] Report saved to: {output_file}")
+    print(f"\nBehavioral analysis complete!")
+    print(f"Report saved to: {output_file}")
     print(f"\n[*] Summary:")
     print(f"    Total behaviors detected: {sum(len(v) for v in analyzer.behavior_matches.values())}")
     print(f"    Tactics identified: {len([k for k, v in analyzer.behavior_matches.items() if v])}")

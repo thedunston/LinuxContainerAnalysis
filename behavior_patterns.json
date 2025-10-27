@@ -297,5 +297,154 @@
       ["LD_LIBRARY_PATH", "LD_LIBRARY_PATH Manipulation"],
       ["ld\\.so", "LD.SO Execution"]
     ]
+  },
+  "SUSPICIOUS": {
+    "description": "Suspicious Activity Patterns",
+    "indicators": [
+      ["/tmp/", "Temp directory access"],
+      ["/var/tmp/", "Var temp directory access"],
+      ["\\.sh\"", "Shell script"],
+      ["systemd", "Systemd service"],
+      ["cron", "Cron job"],
+      ["auth\\.log", "Authentication log access"],
+      ["sshd", "SSH daemon"],
+      ["password", "Password reference"],
+      ["/etc/", "System config access"],
+      ["\\.service", "Service file"]
+    ]
+  },
+  "FILE_OPS": {
+    "description": "File Operations",
+    "indicators": [
+      ["fopen\\(", "File open"],
+      ["fclose\\(", "File close"],
+      ["fwrite\\(", "File write"],
+      ["fread\\(", "File read"],
+      ["fprintf\\(", "Formatted file write"],
+      ["stat\\(", "File status"],
+      ["access\\(", "File access check"],
+      ["open\\(", "Open file descriptor"],
+      ["close\\(", "Close file descriptor"],
+      ["read\\(", "Read from file"],
+      ["write\\(", "Write to file"],
+      ["unlink\\(", "Delete file"],
+      ["rename\\(", "Rename file"],
+      ["chmod\\(", "Change file permissions"],
+      ["chown\\(", "Change file ownership"]
+    ]
+  },
+  "PROCESS": {
+    "description": "Process Operations",
+    "indicators": [
+      ["fork\\(", "Fork process"],
+      ["execve\\(", "Execute program"],
+      ["system\\(", "Execute shell command"],
+      ["popen\\(", "Open process pipe"],
+      ["waitpid\\(", "Wait for process"],
+      ["kill\\(", "Send signal to process"],
+      ["exit\\(", "Exit process"],
+      ["clone\\(", "Clone process"]
+    ]
+  },
+  "NETWORK": {
+    "description": "Network Operations",
+    "indicators": [
+      ["socket\\(", "Create socket"],
+      ["connect\\(", "Connect to remote"],
+      ["bind\\(", "Bind socket"],
+      ["listen\\(", "Listen on socket"],
+      ["accept\\(", "Accept connection"],
+      ["send\\(", "Send data"],
+      ["recv\\(", "Receive data"],
+      ["sendto\\(", "Send datagram"],
+      ["recvfrom\\(", "Receive datagram"],
+      ["gethostbyname\\(", "DNS lookup"],
+      ["getaddrinfo\\(", "Get address info"]
+    ]
+  },
+  "STRING_OPS": {
+    "description": "String Operations",
+    "indicators": [
+      ["strcpy\\(", "String copy"],
+      ["strncpy\\(", "String copy (bounded)"],
+      ["strcat\\(", "String concatenate"],
+      ["strcmp\\(", "String compare"],
+      ["strlen\\(", "String length"],
+      ["sprintf\\(", "String format"],
+      ["snprintf\\(", "String format (bounded)"],
+      ["strstr\\(", "Find substring"],
+      ["strchr\\(", "Find character"],
+      ["strrchr\\(", "Find last character"],
+      ["memcpy\\(", "Memory copy"],
+      ["memset\\(", "Memory set"]
+    ]
+  },
+  "DIRECTORY": {
+    "description": "Directory Operations",
+    "indicators": [
+      ["mkdir\\(", "Create directory"],
+      ["rmdir\\(", "Remove directory"],
+      ["opendir\\(", "Open directory"],
+      ["readdir\\(", "Read directory"],
+      ["closedir\\(", "Close directory"],
+      ["chdir\\(", "Change directory"],
+      ["getcwd\\(", "Get current directory"]
+    ]
+  },
+  "TIME": {
+    "description": "Time Operations",
+    "indicators": [
+      ["time\\(", "Get time"],
+      ["ctime\\(", "Convert time to string"],
+      ["localtime\\(", "Convert to local time"],
+      ["gmtime\\(", "Convert to GMT"],
+      ["strftime\\(", "Format time string"],
+      ["sleep\\(", "Sleep seconds"],
+      ["usleep\\(", "Sleep microseconds"],
+      ["nanosleep\\(", "Sleep nanoseconds"]
+    ]
+  },
+  "OUTPUT": {
+    "description": "Output Operations",
+    "indicators": [
+      ["printf\\(", "Print formatted"],
+      ["puts\\(", "Print string"],
+      ["putchar\\(", "Print character"],
+      ["fprintf\\(", "File print formatted"],
+      ["write\\(", "Write output"]
+    ]
+  },
+  "CRYPTO": {
+    "description": "Cryptographic Operations",
+    "indicators": [
+      ["MD5", "MD5 hash"],
+      ["SHA", "SHA hash"],
+      ["AES", "AES encryption"],
+      ["DES", "DES encryption"],
+      ["encrypt\\(", "Encryption"],
+      ["decrypt\\(", "Decryption"],
+      ["rand\\(", "Random number"],
+      ["srand\\(", "Seed random"]
+    ]
+  },
+  "MEMORY": {
+    "description": "Memory Operations",
+    "indicators": [
+      ["malloc\\(", "Allocate memory"],
+      ["calloc\\(", "Allocate cleared memory"],
+      ["realloc\\(", "Reallocate memory"],
+      ["free\\(", "Free memory"],
+      ["mmap\\(", "Map memory"],
+      ["munmap\\(", "Unmap memory"]
+    ]
+  },
+  "REGISTRY": {
+    "description": "Registry Operations (Windows)",
+    "indicators": [
+      ["RegOpenKey", "Open registry key"],
+      ["RegSetValue", "Set registry value"],
+      ["RegQueryValue", "Query registry value"],
+      ["RegCloseKey", "Close registry key"]
+    ]
   }
 }

@@ -29,10 +29,9 @@ RUN chmod +x /usr/local/bin/trace-malware
 
 # Copy ltrace analysis tools
 COPY ltrace-full.sh /usr/local/bin/ltrace-full
-COPY parse-ltrace.py /usr/local/bin/parse-ltrace.py
 COPY parse-ltrace-behavior.py /usr/local/bin/parse-ltrace-behavior.py
+COPY behavior_patterns.json /usr/local/bin/behavior_patterns.json
 RUN chmod +x /usr/local/bin/ltrace-full
-RUN chmod +x /usr/local/bin/parse-ltrace.py
 RUN chmod +x /usr/local/bin/parse-ltrace-behavior.py
 
 # Set working directory
