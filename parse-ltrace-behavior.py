@@ -9,6 +9,7 @@ import re
 import sys
 import json
 import os
+import argparse
 from collections import defaultdict
 from datetime import datetime
 
@@ -151,12 +152,12 @@ class BehaviorAnalyzer:
         """Build a chronological attack chain narrative"""
         chain = []
         
-        # Phase 1: Initial Access
+        # Initial Access 
         initial_access = [m for m in self.behavior_matches.get('INITIAL_ACCESS', [])]
         if initial_access:
             chain.append({
-                'phase': 'Phase 1: Initial Access',
-                'description': 'Attacker gains initial foothold via SSH brute force',
+                'phase': 'Initial Access',
+                'description': 'Attacker gains initial access',
                 'activities': initial_access
             })
         
@@ -164,43 +165,43 @@ class BehaviorAnalyzer:
         discovery = [m for m in self.behavior_matches.get('DISCOVERY', [])]
         if discovery:
             chain.append({
-                'phase': 'Phase 2: Discovery',
+                'phase': 'Discovery',
                 'description': 'System reconnaissance and information gathering',
                 'activities': discovery
             })
         
-        # Phase 3: Execution
+        # Execution
         execution = [m for m in self.behavior_matches.get('EXECUTION', [])]
         if execution:
             chain.append({
-                'phase': 'Phase 3: Execution',
+                'phase': 'Execution',
                 'description': 'Deploy and execute malicious payloads',
                 'activities': execution
             })
         
-        # Phase 4: Persistence
+        # Persistence
         persistence = [m for m in self.behavior_matches.get('PERSISTENCE', [])]
         if persistence:
             chain.append({
-                'phase': 'Phase 4: Persistence',
+                'phase': 'Persistence',
                 'description': 'Establish persistence mechanisms',
                 'activities': persistence
             })
         
-        # Phase 5: Privilege Escalation
+        # Privilege Escalation
         privesc = [m for m in self.behavior_matches.get('PRIVILEGE_ESCALATION', [])]
         if privesc:
             chain.append({
-                'phase': 'Phase 5: Privilege Escalation',
+                'phase': 'Privilege Escalation',
                 'description': 'Attempt to gain elevated privileges',
                 'activities': privesc
             })
         
-        # Phase 6: Defense Evasion
+        # Defense Evasion
         evasion = [m for m in self.behavior_matches.get('DEFENSE_EVASION', [])]
         if evasion:
             chain.append({
-                'phase': 'Phase 6: Defense Evasion',
+                'phase': 'Defense Evasion',
                 'description': 'Cover tracks and evade detection',
                 'activities': evasion
             })
@@ -254,7 +255,7 @@ class BehaviorAnalyzer:
             # Suspicious Activities Highlight
             suspicious_count = len(self.behavior_matches.get('SUSPICIOUS', []))
             if suspicious_count > 0:
-                f.write("⚠️  SUSPICIOUS ACTIVITIES DETECTED: {} indicators\n\n".format(suspicious_count))
+                f.write("  SUSPICIOUS ACTIVITIES DETECTED: {} indicators\n\n".format(suspicious_count))
             
             # Tactics Overview
             f.write("## TACTICS OVERVIEW\n")
@@ -262,7 +263,7 @@ class BehaviorAnalyzer:
             for tactic, data in self.behaviors.items():
                 count = len(self.behavior_matches.get(tactic, []))
                 if count > 0:
-                    f.write(f"✓ {tactic:25s} - {data['description']:50s} [{count:3d} indicators]\n")
+                    f.write(f"{tactic:25s} - {data['description']:50s} [{count:3d} indicators]\n")
                 else:
                     f.write(f"  {tactic:25s} - {data['description']:50s} [  0 indicators]\n")
             f.write("\n")
@@ -310,7 +311,7 @@ class BehaviorAnalyzer:
                     by_technique[match['technique']].append(match)
                 
                 for technique, occurrences in sorted(by_technique.items(), key=lambda x: len(x[1]), reverse=True):
-                    f.write(f"⚠️  {technique}\n")
+                    f.write(f"  {technique}\n")
                     f.write(f"   Count: {len(occurrences)}\n")
                     f.write(f"   Evidence:\n")
                     
@@ -439,16 +440,34 @@ class BehaviorAnalyzer:
             f.write("=" * 100 + "\n")
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: parse-ltrace-behavior.py <ltrace_output_file> [behavior_report_file]")
-        print("\nThis parser analyzes ltrace output for malicious behavioral patterns")
-        print("and maps them to attack tactics and techniques.")
+    parser = argparse.ArgumentParser(description='Analyzes ltrace output for malicious behavioral patterns and maps them to attack tactics and techniques.',
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    
+    parser.add_argument('-i', '--input',required=True,metavar='FILE',help='ltrace output file to analyze')
+    
+    parser.add_argument('-o', '--output',metavar='FILE',help='behavior report output file (default: <input_file>_behavior.txt)')
+    
+    parser.add_argument('-c', '--config',default='behavior_patterns.json',metavar='FILE',help='JSON configuration file with behavior patterns (default: behavior_patterns.json)')
+    
+    args = parser.parse_args()
+    
+    # Verify the json config file exists
+    if not os.path.exists(args.config):
+        print(f"[!] Error: {args.config} not found. Please ensure it exists or specify a different config file with -c/--config.")
         sys.exit(1)
     
-    input_file = sys.argv[1]
-    output_file = sys.argv[2] if len(sys.argv) > 2 else input_file.replace('.txt', '_behavior.txt')
+    # Basic check json file is valid.
+    try:
+        with open(args.config, 'r') as f:
+            json.load(f)
+    except ValueError as e:
+        print(f"[!] Error: Invalid JSON file. Please ensure {args.config} is a valid JSON file. Error: {e}")
+        sys.exit(1)
     
-    analyzer = BehaviorAnalyzer()
+    input_file = args.input
+    output_file = args.output if args.output else input_file.replace('.txt', '_behavior.txt')
+    
+    analyzer = BehaviorAnalyzer(config_file=args.config)
     analyzer.process_file(input_file)
     analyzer.generate_report(output_file)
     
@@ -457,7 +476,7 @@ def main():
     print(f"\n[*] Summary:")
     print(f"    Total behaviors detected: {sum(len(v) for v in analyzer.behavior_matches.values())}")
     print(f"    Tactics identified: {len([k for k, v in analyzer.behavior_matches.items() if v])}")
-    print(f"    Attack phases: {len(analyzer.build_attack_chain())}")
+    print(f"    Attack stages: {len(analyzer.build_attack_chain())}")
 
 if __name__ == '__main__':
     main()

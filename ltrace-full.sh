@@ -70,8 +70,8 @@ done
 # Parse the output - Behavioral Analysis.
 if [ -n "$PARSER_DIR" ] && [ -f "$PARSER_DIR/parse-ltrace-behavior.py" ]; then
     echo "[*] Running behavioral analysis parser..."
-    python3 "$PARSER_DIR/parse-ltrace-behavior.py" "$RAW_OUTPUT" "$BEHAVIOR_OUTPUT"
-    echo "[✓] Behavioral analysis saved to: $BEHAVIOR_OUTPUT"
+    python3 "$PARSER_DIR/parse-ltrace-behavior.py" -i "$RAW_OUTPUT" -o "$BEHAVIOR_OUTPUT" -c "$PARSER_DIR/behavior_patterns.json"
+    echo "[X] Behavioral analysis saved to: $BEHAVIOR_OUTPUT"
 else
     echo "[!] Behavioral parser not found."
 fi
@@ -85,6 +85,5 @@ echo "    2. Behavioral analysis:    $BEHAVIOR_OUTPUT"
 echo ""
 echo "[*] Quick Commands:"
 echo "    - View behavioral report:  cat $BEHAVIOR_OUTPUT"
-echo "    - Search for tactics:      grep 'Phase' $BEHAVIOR_OUTPUT"
 echo "    - View suspicious acts:    grep 'SUSPICIOUS' $BEHAVIOR_OUTPUT"
 echo "    - View IOCs:               grep 'IOC' $BEHAVIOR_OUTPUT"

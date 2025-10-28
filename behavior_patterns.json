@@ -437,14 +437,5 @@
       ["mmap\\(", "Map memory"],
       ["munmap\\(", "Unmap memory"]
     ]
-  },
-  "REGISTRY": {
-    "description": "Registry Operations (Windows)",
-    "indicators": [
-      ["RegOpenKey", "Open registry key"],
-      ["RegSetValue", "Set registry value"],
-      ["RegQueryValue", "Query registry value"],
-      ["RegCloseKey", "Close registry key"]
-    ]
   }
 }

@@ -21,22 +21,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     file \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy monitoring and trace analysis tools
+# Copy monitoring and trace analysis tools.
 COPY start-monitoring.sh /usr/local/bin/start-monitoring.sh
-COPY trace-malware.sh /usr/local/bin/trace-malware
 RUN chmod +x /usr/local/bin/start-monitoring.sh
-RUN chmod +x /usr/local/bin/trace-malware
 
-# Copy ltrace analysis tools
+# Copy ltrace analysis tools.
 COPY ltrace-full.sh /usr/local/bin/ltrace-full
 COPY parse-ltrace-behavior.py /usr/local/bin/parse-ltrace-behavior.py
-COPY behavior_patterns.json /usr/local/bin/behavior_patterns.json
+COPY behavior_patterns.json /etc/behavior_patterns.json
 RUN chmod +x /usr/local/bin/ltrace-full
 RUN chmod +x /usr/local/bin/parse-ltrace-behavior.py
 
-# Set working directory
+# Set working directory.
 RUN mkdir -p /home/app
 WORKDIR /home/app
 
-# Keep container running
+# Keep container running.
 CMD ["tail", "-f", "/dev/null"]
