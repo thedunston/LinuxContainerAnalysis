@@ -1,5 +1,10 @@
 # Linux Malware Analysis Container
 
+This program builds off of the https://github.com/LaurieWired/linux_malware_analysis_container GitHub project.
+
+The tool `ltrace` is used to trace the binaries system calls. Then the python program `parse-ltrace-behavior.py` is used to parse the ltrace output and extract known malicious patterns for review by an analyst.
+
+
 [![Follow @lauriewired](https://img.shields.io/twitter/follow/lauriewired?style=social)](https://twitter.com/lauriewired)
 
 # Description
