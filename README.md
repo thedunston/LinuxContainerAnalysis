@@ -4,6 +4,7 @@ This program builds off of the https://github.com/LaurieWired/linux_malware_anal
 
 The tool `ltrace` is used to trace the binaries system calls. Then the python program `parse-ltrace-behavior.py` is used to parse the ltrace output and extract known malicious patterns for review by an analyst.
 
+See the USAGE_GUIDE.md.
 
 [![Follow @lauriewired](https://img.shields.io/twitter/follow/lauriewired?style=social)](https://twitter.com/lauriewired)
 
