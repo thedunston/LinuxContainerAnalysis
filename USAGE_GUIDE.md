@@ -74,7 +74,7 @@ The Linux Malware Analysis Container is a secure, isolated environment for analy
 ## Prerequisites
 
 ### Required Software
-- **Podman** (version 3.0 or higher) or **Docker**
+- **Podman** (version 3.0 or higher)
 - **Python 3** (for local analysis)
 - **Bash** (version 4.0 or higher)
 
@@ -153,7 +153,7 @@ podman images | grep linux-malware-analysis
 
 ## Running a Malware Hunt
 
-### Method 1: Using the Automated Script (Recommended)
+## Using the Automated Script (Recommended)
 
 The `linux_malware_analysis_container.sh` script automates the entire analysis workflow:
 
@@ -175,52 +175,8 @@ The `linux_malware_analysis_container.sh` script automates the entire analysis w
 6. Opens an interactive bash session
 7. Cleans up the container after exit
 
-### Method 2: Manual Container Management
 
-**Start the container:**
-```bash
-podman run -d --network none --name malware-analysis \
-    --cap-add=SYS_PTRACE \
-    --security-opt seccomp=unconfined \
-    -v ./samples:/home/app/samples:Z \
-    -v ./analysis:/home/app/analysis:Z \
-    linux-malware-analysis
-```
-
-**Copy malware into the container:**
-```bash
-podman cp suspicious_binary malware-analysis:/home/app/
-```
-
-**Enter the container:**
-```bash
-podman exec -it malware-analysis /bin/bash
-```
-
-**Stop and remove the container:**
-```bash
-podman stop malware-analysis
-podman rm malware-analysis
-```
-
-### Method 3: Using Docker Compose
-
-**Start the environment:**
-```bash
-docker-compose up -d
-```
-
-**Enter the container:**
-```bash
-docker-compose exec malware-analysis /bin/bash
-```
-
-**Stop the environment:**
-```bash
-docker-compose down
-```
-
-### Method 4: Extracting Analysis Results to Host
+## Extracting Analysis Results to Host
 
 After running your analysis inside the container, you'll want to copy the results to your host machine for further review or archiving.
 
@@ -248,15 +204,6 @@ podman cp <container_name>:/var/log/inotify/filesystem.log ./filesystem_changes.
 podman cp <container_name>:/tmp/ltrace_analysis/ltrace_behavior_*.txt ./
 ```
 
-**Step 3: Copy from the mounted volumes (if using volumes)**
-
-If you started the container with mounted volumes (Method 2 or 3), the analysis output in `/home/app/analysis/` is already accessible on your host:
-
-```bash
-# Results are already in your local directory
-ls -la ./analysis/
-```
-
 **Example workflow:**
 ```bash
 # 1. Run analysis
@@ -274,11 +221,6 @@ podman cp linux-malware-analysis_1698508800:/tmp/ltrace_analysis ./my_analysis_r
 
 # 5. View on host
 cat ./my_analysis_results/ltrace_behavior_*.txt
-```
-
-**Pro tip:** For Docker Compose, you can also copy files:
-```bash
-docker-compose cp malware-analysis:/tmp/ltrace_analysis ./analysis_results
 ```
 
 ---
