@@ -70,7 +70,7 @@ done
 # Parse the output - Behavioral Analysis.
 if [ -n "$PARSER_DIR" ] && [ -f "$PARSER_DIR/parse-ltrace-behavior.py" ]; then
     echo "[*] Running behavioral analysis parser..."
-    python3 "$PARSER_DIR/parse-ltrace-behavior.py" -i "$RAW_OUTPUT" -o "$BEHAVIOR_OUTPUT" -c "$PARSER_DIR/behavior_patterns.json"
+    python3 "$PARSER_DIR/parse-ltrace-behavior.py" -i "$RAW_OUTPUT" -o "$BEHAVIOR_OUTPUT" -c "/etc/behavior_patterns.json"
     echo "[X] Behavioral analysis saved to: $BEHAVIOR_OUTPUT"
 else
     echo "[!] Behavioral parser not found."

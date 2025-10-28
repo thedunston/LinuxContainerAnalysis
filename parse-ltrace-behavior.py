@@ -218,6 +218,10 @@ class BehaviorAnalyzer:
                 if not line or line.startswith('+++ ') or line.startswith('--- '):
                     continue
                 
+                # Skip ltrace-related commands
+                if 'ltrace' in line.lower():
+                    continue
+                
                 call_info = self.parse_line(line)
                 if not call_info:
                     continue
