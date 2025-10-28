@@ -6,6 +6,8 @@ The tool `ltrace` is used to trace the binaries system calls. Then the python pr
 
 See the USAGE_GUIDE.md.
 
+I'm using this in a class for Malware Analysis where I create the 'malware' and have students run it in a container for teaching dynamic malware analysis.
+
 [![Follow @lauriewired](https://img.shields.io/twitter/follow/lauriewired?style=social)](https://twitter.com/lauriewired)
 
 # Description
