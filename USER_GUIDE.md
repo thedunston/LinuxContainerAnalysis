@@ -1,14 +1,58 @@
 # Linux Malware Analysis Container - User Guide
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Environment Setup with Podman](#environment-setup-with-podman)
-4. [Running a Malware Hunt](#running-a-malware-hunt)
-5. [Analysis Tools](#analysis-tools)
-6. [Understanding the Output](#understanding-the-output)
-7. [Advanced Usage](#advanced-usage)
-8. [Troubleshooting](#troubleshooting)
+1. [Quick Start](#quick-start)
+2. [Overview](#overview)
+3. [Prerequisites](#prerequisites)
+4. [Environment Setup with Podman](#environment-setup-with-podman)
+5. [Running a Malware Hunt](#running-a-malware-hunt)
+6. [Analysis Tools](#analysis-tools)
+7. [Understanding the Output](#understanding-the-output)
+8. [Advanced Usage](#advanced-usage)
+9. [Troubleshooting](#troubleshooting)
+
+---
+
+## Quick Start
+
+Here's a complete workflow from setup to extracting analysis results:
+
+```bash
+# 1. Build the container
+cd /home/thedunston/linux_malware_analysis_container
+podman build -t linux-malware-analysis .
+
+# 2. Compile the test program
+cd samples
+make
+
+# 3. Run analysis using the automated script
+cd ..
+./linux_malware_analysis_container.sh samples/test_malware_simulator
+
+# 4. Inside the container, run full analysis
+ltrace-full /home/app/test_malware_simulator
+
+# 5. View the behavioral report (inside container)
+cat /tmp/ltrace_analysis/ltrace_behavior_*.txt
+
+# 6. Copy analysis results to host (open a new terminal on host)
+# Get the container name
+podman ps -a | grep linux_malware_analysis
+
+# Copy the entire analysis folder to host
+podman cp <container_name>:/tmp/ltrace_analysis ./analysis_results
+
+# Alternative: Copy specific files
+podman cp <container_name>:/tmp/ltrace_analysis/ltrace_behavior_*.txt ./
+podman cp <container_name>:/tmp/ltrace_analysis/ltrace_raw_*.txt ./
+
+# 7. Exit container and view results on host
+exit
+cat ./analysis_results/ltrace_behavior_*.txt
+```
+
+**Note**: The automated script (`linux_malware_analysis_container.sh`) creates a container with a timestamped name like `linux-malware-analysis_1698508800`. Use `podman ps -a` to find the exact name.
 
 ---
 
@@ -175,6 +219,67 @@ docker-compose exec malware-analysis /bin/bash
 **Stop the environment:**
 ```bash
 docker-compose down
+```
+
+### Method 4: Extracting Analysis Results to Host
+
+After running your analysis inside the container, you'll want to copy the results to your host machine for further review or archiving.
+
+**Step 1: Identify the container name**
+```bash
+# List all containers (including stopped ones)
+podman ps -a | grep linux
+
+# Or for Docker
+docker ps -a | grep linux
+```
+
+**Step 2: Copy analysis results**
+```bash
+# Copy the entire ltrace analysis folder
+podman cp <container_name>:/tmp/ltrace_analysis ./analysis_results
+
+# Copy trace logs
+podman cp <container_name>:/var/log/malware-trace ./trace_logs
+
+# Copy file system monitoring logs
+podman cp <container_name>:/var/log/inotify/filesystem.log ./filesystem_changes.log
+
+# Copy specific files only
+podman cp <container_name>:/tmp/ltrace_analysis/ltrace_behavior_*.txt ./
+```
+
+**Step 3: Copy from the mounted volumes (if using volumes)**
+
+If you started the container with mounted volumes (Method 2 or 3), the analysis output in `/home/app/analysis/` is already accessible on your host:
+
+```bash
+# Results are already in your local directory
+ls -la ./analysis/
+```
+
+**Example workflow:**
+```bash
+# 1. Run analysis
+./linux_malware_analysis_container.sh samples/test_malware_simulator
+
+# 2. Inside container, run analysis
+ltrace-full /home/app/test_malware_simulator
+
+# 3. Open new terminal on host, find container name
+podman ps -a | grep linux_malware_analysis
+# Output: linux-malware-analysis_1698508800
+
+# 4. Copy results
+podman cp linux-malware-analysis_1698508800:/tmp/ltrace_analysis ./my_analysis_results
+
+# 5. View on host
+cat ./my_analysis_results/ltrace_behavior_*.txt
+```
+
+**Pro tip:** For Docker Compose, you can also copy files:
+```bash
+docker-compose cp malware-analysis:/tmp/ltrace_analysis ./analysis_results
 ```
 
 ---
@@ -532,6 +637,10 @@ cat /tmp/ltrace_analysis/ltrace_behavior_*.txt
 
 # Monitor file system
 tail -f /var/log/inotify/filesystem.log
+
+# Copy analysis results to host
+podman cp <container_name>:/tmp/ltrace_analysis ./analysis_results
+podman cp <container_name>:/var/log/malware-trace ./trace_logs
 
 # Clean up
 podman stop malware-analysis && podman rm malware-analysis

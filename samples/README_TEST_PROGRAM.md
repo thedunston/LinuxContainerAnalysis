@@ -87,12 +87,6 @@ This test program simulates the following behavioral categories:
 # Compile the program
 make
 
-# Compile and run
-make test
-
-# Clean up
-make clean
-
 # Show help
 make help
 ```
@@ -103,7 +97,7 @@ make help
 gcc -Wall -Wextra -O2 -o test_malware_simulator test_malware_simulator.c
 ```
 
-## Usage
+## Perform the steps below ONLY within the container.
 
 ### Basic Execution
 
@@ -325,8 +319,6 @@ diff -u test_report.txt malware_report.txt
 The program creates several test files. To clean them up:
 
 ```bash
-# Using make
-make clean
 
 # Manual cleanup
 rm -f /tmp/test_*.txt /tmp/test_*.sh /tmp/.bashrc_test
@@ -336,73 +328,11 @@ rm -rf /tmp/test_dir
 
 ## Educational Value
 
-This test program is excellent for:
-
-1. **Learning behavioral analysis**: See how different function calls map to malicious tactics
-2. **Understanding ltrace/strace**: Observe how system and library calls are captured
-3. **Pattern development**: Test new detection patterns in `behavior_patterns.json`
-4. **Training**: Demonstrate malware analysis techniques safely
-5. **Validation**: Verify the analysis environment is working correctly
-
-## Extending the Test Program
-
-You can modify the program to test additional patterns:
-
-```c
-// Add new behavior simulation
-void simulate_custom_behavior() {
-    printf("[CUSTOM] Simulating custom behavior...\n");
-    
-    // Your test code here
-    
-    printf("\n");
-}
-
-// Call from main()
-int main() {
-    // ... existing code ...
-    simulate_custom_behavior();
-    // ... rest of code ...
-}
-```
-
-## Troubleshooting
-
-### Program doesn't compile
-```bash
-# Check GCC is installed
-gcc --version
-
-# Install if missing
-apt-get update && apt-get install -y gcc
-```
-
-### No behavioral patterns detected
-```bash
-# Verify behavior_patterns.json exists
-ls -l /usr/local/bin/behavior_patterns.json
-
-# Check parser is available
-which parse-ltrace-behavior.py
-
-# Run with verbose ltrace
-ltrace -s 4096 -f -tt -T ./test_malware_simulator
-```
-
-### Permission errors
-```bash
-# Ensure executable
-chmod +x test_malware_simulator
-
-# Check /tmp permissions
-ls -ld /tmp
-```
-
 ## References
 
 - **Main User Guide**: See `USER_GUIDE.md` for complete setup instructions
-- **Behavior Patterns**: See `behavior_patterns.json` for all detection patterns
-- **Analysis Scripts**: See `ltrace-full.sh` and `parse-ltrace-behavior.py`
+- **Behavior Patterns**: See `behavior_patterns.json` for all detection patterns (/etc/behavior_patterns.json within the container)
+- **Analysis Scripts**: See `ltrace-full.sh` and `parse-ltrace-behavior.py` (located under /usr/local/bin within the container)
 
 ## License
 
