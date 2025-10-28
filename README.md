@@ -10,8 +10,6 @@ I'm using this in a class for Malware Analysis where I create the 'malware' and 
 
 Original GitHub repo info below.
 
-[![Follow @lauriewired](https://img.shields.io/twitter/follow/lauriewired?style=social)](https://twitter.com/lauriewired)
-
 # Description
 Quickly build a lightweight Docker container to bundle tools for dynamic Linux malware analysis.
 
