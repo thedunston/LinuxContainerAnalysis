@@ -124,7 +124,6 @@ linux_malware_analysis_container/
 ├── start-monitoring.sh             # File system monitoring script
 ├── linux_malware_analysis_container.sh  # Main execution script
 ├── samples/                        # Place malware samples here
-└── analysis/                       # Analysis output directory
 ```
 
 ### 3. Build the Container Image
